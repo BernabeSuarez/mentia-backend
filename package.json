@@ -1,0 +1,16 @@
+{
+  "name": "mentia-backend",
+  "version": "1.0.0",
+  "description": "backend para web Mentia Academy",
+  "license": "ISC",
+  "author": "Veddev Desarrollo",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
