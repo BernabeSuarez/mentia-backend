@@ -1,19 +1,50 @@
 import express from 'express';
 import { sequelize } from "./config/databaseConnection.js";
+import subscriberRoutes from './routes/subscriberRoutes.js';
 
 
 const app = express()
 const port = 3000
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Sincronizar modelos con la base de datos
 try {
     await sequelize.sync({ force: false });
 
 } catch (error) {
     console.error('Unable to connect to the database:', error);
 }
+
+
+
+// Rutas
+app.use('/api/subscribers', subscriberRoutes);
+
+// Ruta de prueba
+app.get('/', (req, res) => {
+    res.json({ message: 'Newsletter API is running' });
+});
+
+// Manejo de rutas no encontradas
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'Route not found'
+    });
+});
+
+// Manejo de errores global
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        success: false,
+        message: 'Something went wrong!'
+    });
+});
+
+
 app.listen(port, () => {
     console.log('Server running OK on port:', port)
 })
