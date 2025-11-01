@@ -1,6 +1,7 @@
 import express from 'express';
 import { sequelize } from "./config/databaseConnection.js";
 import subscriberRoutes from './routes/subscriberRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 
 
 const app = express()
@@ -21,6 +22,7 @@ try {
 
 // Rutas
 app.use('/api/subscribers', subscriberRoutes);
+app.use('/api/contacts', contactRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
