@@ -22,7 +22,7 @@ try {
 
 // Rutas
 app.use('/api/subscribers', subscriberRoutes);
-app.use('/api/contacts', contactRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
