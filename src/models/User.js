@@ -175,3 +175,9 @@ User.prototype.toJSON = function () {
     return values;
 };
 
+User.associate = function (models) {
+    User.hasOne(models.Subscription, {
+        foreignKey: 'user_id',
+        as: 'subscription'
+    });
+};
