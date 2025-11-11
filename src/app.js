@@ -4,9 +4,7 @@ import subscriberRoutes from './routes/subscriberRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import infoContactRoutes from './routes/infoContactRoutes.js';
 import { router as userRoutes } from './routes/usersRoutes.js';
-import subscriptionRoutes from './routes/subscriptionRoutes.js';
 import './models/User.js';
-import './models/Subscription.js';
 
 
 
@@ -28,11 +26,7 @@ app.use('/api/subscribers', subscriberRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/info-contact', infoContactRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/subscriptions/webhook',
-    express.raw({ type: 'application/json' })
-);
 
-app.use('/api/subscriptions', subscriptionRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
