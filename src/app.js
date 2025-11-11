@@ -4,7 +4,9 @@ import subscriberRoutes from './routes/subscriberRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import infoContactRoutes from './routes/infoContactRoutes.js';
 import { router as userRoutes } from './routes/usersRoutes.js';
+import { router as subscriptionRoutes } from './routes/subscriptionRoutes.js';
 import './models/User.js';
+import cors from 'cors';
 
 
 
@@ -13,6 +15,7 @@ const port = 3000
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors())
 
 await sequelize.authenticate();
 await sequelize.sync({ alter: true });
@@ -26,6 +29,7 @@ app.use('/api/subscribers', subscriberRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/info-contact', infoContactRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
 
 
 // Ruta de prueba
