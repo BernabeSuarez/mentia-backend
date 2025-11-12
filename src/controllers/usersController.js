@@ -6,12 +6,11 @@ class UserController {
         try {
             const userData = req.body;
 
-            // Validación básica
-            if (!userData.username || !userData.password || !userData.email ||
-                !userData.firstname || !userData.lastname) {
+
+            if (!userData.password || !userData.email) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Username, password, email, firstname y lastname son campos requeridos'
+                    message: 'Email y password son campos requeridos'
                 });
             }
 
