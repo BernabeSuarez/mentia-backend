@@ -2,13 +2,13 @@ import nodemailer from 'nodemailer';
 
 // Configuración del transporter
 const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: process.env.EMAIL_PORT || 587,
-    secure: false, // true para 465, false para otros puertos
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
-        user: process.env.EMAIL_USER, // tu email
-        pass: process.env.EMAIL_PASS  // tu contraseña o app password
-    }
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
 });
 
 // Función para enviar email de bienvenida
