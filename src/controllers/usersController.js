@@ -54,6 +54,7 @@ class UserController {
         }
     }
 
+
     async getById(req, res) {
         try {
             const { id } = req.params;
@@ -80,6 +81,27 @@ class UserController {
             const { username } = req.params;
 
             const result = await userService.getUserByUsername(username);
+
+            if (!result.success) {
+                return res.status(404).json(result);
+            }
+
+            return res.status(200).json(result);
+        } catch (error) {
+            console.error('Error al obtener usuario:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Error interno del servidor',
+                error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            });
+        }
+    }
+
+    async getByEmail(req, res) {
+        try {
+            const { email } = req.params;
+
+            const result = await userService.getUserByEmail(email);
 
             if (!result.success) {
                 return res.status(404).json(result);
@@ -183,16 +205,16 @@ class UserController {
 
     async login(req, res) {
         try {
-            const { username, password } = req.body;
+            const { email, password } = req.body;
 
-            if (!username || !password) {
+            if (!email || !password) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Username y password son requeridos'
+                    message: 'Email y contraseña son requeridos'
                 });
             }
 
-            const result = await userService.validateCredentials(username, password);
+            const result = await userService.validateCredentials(email, password);
 
             if (!result.success) {
                 return res.status(401).json(result);

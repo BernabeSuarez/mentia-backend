@@ -1,4 +1,6 @@
 import { subscriptionService } from '../services/subscriptionService.js';
+import userService from '../services/usersService.js'
+import { enviarEmailBienvenida } from '../../utils/email_services.js';
 
 class SubscriptionController {
     async create(req, res) {
@@ -23,6 +25,37 @@ class SubscriptionController {
 
             if (!result.success) {
                 return res.status(400).json(result);
+            }
+
+            // Crear usuario después de confirmación exitosa del pago
+            try {
+                // Extraer nombre del email (parte antes del @)
+                const username = email.split('@')[0];
+
+                // Datos del nuevo usuario
+                const userData = {
+                    username: username,
+                    email: email,
+                    password: 'Mentia2025'
+                };
+
+                // Llamar al servicio o modelo de usuario para crear
+                // Ajusta esto según tu implementación (userService, User model, etc.)
+                await userService.createUser(userData);
+                await enviarEmailBienvenida({
+                    nombre: username,
+                    email: email,
+                    password: 'Mentia2025'
+                });
+
+
+
+                console.log(`Usuario creado exitosamente: ${email}`);
+            } catch (userError) {
+                console.error('Error al crear usuario:', userError);
+                // El pago se procesó correctamente, pero falló la creación del usuario
+                // Puedes decidir si retornar error o solo loguearlo
+                // Para este caso, continuamos con la respuesta exitosa del pago
             }
 
             return res.status(200).json(result);

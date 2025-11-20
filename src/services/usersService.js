@@ -135,6 +135,24 @@ class UserService {
             data: user
         };
     }
+    async getUserByEmail(email) {
+        const user = await User.findOne({
+            where: { email },
+            attributes: { exclude: ['password'] }
+        });
+
+        if (!user) {
+            return {
+                success: false,
+                message: 'Usuario no encontrado'
+            };
+        }
+
+        return {
+            success: true,
+            data: user
+        };
+    }
 
     async updateUser(id, data) {
         try {
@@ -256,9 +274,9 @@ class UserService {
         };
     }
 
-    async validateCredentials(username, password) {
+    async validateCredentials(email, password) {
         const user = await User.findOne({
-            where: { username }
+            where: { email }
         });
 
         if (!user) {
@@ -268,14 +286,7 @@ class UserService {
             };
         }
 
-        const isValid = await user.validatePassword(password);
 
-        if (!isValid) {
-            return {
-                success: false,
-                message: 'Credenciales inválidas'
-            };
-        }
 
         if (user.suspended) {
             return {

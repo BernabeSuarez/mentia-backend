@@ -1,7 +1,6 @@
 // models/User.js
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/databaseConnection.js';
-import bcrypt from 'bcryptjs';
 
 export const User = sequelize.define('User', {
     id: {
@@ -142,33 +141,14 @@ export const User = sequelize.define('User', {
     updatedAt: 'updated_at',
     charset: 'utf8mb4',
     collate: 'utf8mb4_unicode_ci',
-    hooks: {
-        beforeCreate: async (user) => {
-            if (user.password) {
-                const salt = await bcrypt.genSalt(10);
-                user.password = await bcrypt.hash(user.password, salt);
-            }
-        },
-        beforeUpdate: async (user) => {
-            if (user.changed('password')) {
-                const salt = await bcrypt.genSalt(10);
-                user.password = await bcrypt.hash(user.password, salt);
-            }
-        }
-    }
 });
 
-// Método de instancia para verificar contraseña
-User.prototype.validatePassword = async function (password) {
-    return await bcrypt.compare(password, this.password);
-};
-
-// Método de instancia para obtener nombre completo
+// Método para nombre completo
 User.prototype.getFullName = function () {
     return `${this.firstname} ${this.lastname}`;
 };
 
-// Método para excluir password en respuestas JSON
+// Excluir password en JSON
 User.prototype.toJSON = function () {
     const values = { ...this.get() };
     delete values.password;
