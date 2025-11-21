@@ -1,5 +1,6 @@
 // controllers/userController.js
 import userService from '../services/usersService.js';
+import { logger } from '../../utils/logger.js';
 
 class UserController {
     async create(req, res) {
@@ -22,7 +23,7 @@ class UserController {
 
             return res.status(201).json(result);
         } catch (error) {
-            console.error('Error al crear usuario:', error);
+            logger.error('Error al crear usuario:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -45,7 +46,7 @@ class UserController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al obtener usuarios:', error);
+            logger.error('Error al obtener usuarios:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -67,7 +68,7 @@ class UserController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al obtener usuario:', error);
+            logger.error('Error al obtener usuario:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -88,7 +89,7 @@ class UserController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al obtener usuario:', error);
+            logger.error('Error al obtener usuario:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -109,7 +110,7 @@ class UserController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al obtener usuario:', error);
+            logger.error('Error al obtener usuario:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -131,7 +132,7 @@ class UserController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al actualizar usuario:', error);
+            logger.error('Error al actualizar usuario:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -152,7 +153,7 @@ class UserController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al eliminar usuario:', error);
+            logger.error('Error al eliminar usuario:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -173,7 +174,7 @@ class UserController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al suspender usuario:', error);
+            logger.error('Error al suspender usuario:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -194,7 +195,7 @@ class UserController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al activar usuario:', error);
+            logger.error('Error al activar usuario:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -223,7 +224,7 @@ class UserController {
             // Aquí puedes generar un token JWT si lo necesitas
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error en login:', error);
+            logger.error('Error en login:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',

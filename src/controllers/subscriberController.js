@@ -1,4 +1,5 @@
 import subscriberService from '../services/subscriberService.js';
+import { logger } from '../../utils/logger.js';
 
 export const subscribe = async (req, res) => {
     try {
@@ -23,6 +24,7 @@ export const subscribe = async (req, res) => {
             }
         });
     } catch (error) {
+        logger.error('Error al procesar la suscripción:', error);
         // Error de validación de Sequelize
         if (error.name === 'SequelizeValidationError') {
             return res.status(400).json({
@@ -65,6 +67,7 @@ export const unsubscribe = async (req, res) => {
             message: 'Email eliminado de la lista de suscriptores'
         });
     } catch (error) {
+        logger.error('Error al procesar la desuscripción:', error);
         res.status(500).json({
             success: false,
             message: error.message
@@ -82,6 +85,7 @@ export const getAllSuscribers = async (req, res) => {
             data: subscribers
         });
     } catch (error) {
+        logger.error('Error al obtener los suscriptores:', error);
         res.status(500).json({
             success: false,
             message: 'Error al obtener los suscriptores'
@@ -98,6 +102,7 @@ export const getCount = async (req, res) => {
             count
         });
     } catch (error) {
+        logger.error('Error al obtener el conteo de suscriptores:', error);
         res.status(500).json({
             success: false,
             message: 'Error al obtener el conteo de suscriptores'

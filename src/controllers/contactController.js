@@ -1,5 +1,6 @@
 // controllers/contactController.js
 import contactService from '../services/contactService.js';
+import { logger } from '../../utils/logger.js';
 
 class ContactController {
     async create(req, res) {
@@ -27,7 +28,7 @@ class ContactController {
 
             return res.status(201).json(result);
         } catch (error) {
-            console.error('Error al crear contacto:', error);
+            logger.error('Error al crear contacto:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -48,7 +49,7 @@ class ContactController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al obtener contactos:', error);
+            logger.error('Error al obtener contactos:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -69,7 +70,7 @@ class ContactController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al obtener contacto:', error);
+            logger.error('Error al obtener contacto:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -90,7 +91,7 @@ class ContactController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al marcar contacto como leído:', error);
+            logger.error('Error al marcar contacto como leído:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -111,7 +112,7 @@ class ContactController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al eliminar contacto:', error);
+            logger.error('Error al eliminar contacto:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',

@@ -1,25 +1,26 @@
 import nodemailer from 'nodemailer';
+import { logger } from './logger.js';
 
 // Configuración del transporter
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
 // Función para enviar email de bienvenida
 export async function enviarEmailBienvenida(datosUsuario) {
-    const { nombre, email, password } = datosUsuario;
+  const { nombre, email, password } = datosUsuario;
 
-    const mailOptions = {
-        from: `"Mi Aplicación" <${process.env.EMAIL_USER}>`,
-        to: email,
-        subject: '¡Bienvenido! Tu cuenta ha sido creada',
-        html: `
+  const mailOptions = {
+    from: `"Mi Aplicación" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: '¡Bienvenido! Tu cuenta ha sido creada',
+    html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -98,7 +99,7 @@ export async function enviarEmailBienvenida(datosUsuario) {
       </body>
       </html>
     `,
-        text: `
+    text: `
       Hola ${nombre},
       
       Tu cuenta ha sido creada exitosamente.
@@ -112,17 +113,17 @@ export async function enviarEmailBienvenida(datosUsuario) {
       
       Si no solicitaste esta cuenta, por favor ignora este correo.
     `
-    };
+  };
 
-    try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email enviado exitosamente:', info.messageId);
-        return {
-            success: true,
-            messageId: info.messageId
-        };
-    } catch (error) {
-        console.error('Error al enviar email:', error);
-        throw error;
-    }
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    logger.info('Email enviado exitosamente:', info.messageId);
+    return {
+      success: true,
+      messageId: info.messageId
+    };
+  } catch (error) {
+    logger.error('Error al enviar email:', error);
+    throw error;
+  }
 }

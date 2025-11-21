@@ -7,6 +7,7 @@ import { router as userRoutes } from './routes/usersRoutes.js';
 import { router as subscriptionRoutes } from './routes/subscriptionRoutes.js';
 import './models/User.js';
 import cors from 'cors';
+import { logger } from '../utils/logger.js';
 
 
 
@@ -47,7 +48,7 @@ app.use((req, res) => {
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    logger.error(err.stack);
     res.status(500).json({
         success: false,
         message: 'Something went wrong!'
@@ -56,7 +57,7 @@ app.use((err, req, res, next) => {
 
 
 app.listen(port, () => {
-    console.log('Server running OK on port:', port)
+    logger.info('Server running OK on port:', port)
 })
 
 

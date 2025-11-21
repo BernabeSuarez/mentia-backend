@@ -1,6 +1,7 @@
 import { subscriptionService } from '../services/subscriptionService.js';
 import userService from '../services/usersService.js'
 import { enviarEmailBienvenida } from '../../utils/email_services.js';
+import { logger } from '../../utils/logger.js';
 
 class SubscriptionController {
     async create(req, res) {
@@ -50,9 +51,9 @@ class SubscriptionController {
 
 
 
-                console.log(`Usuario creado exitosamente: ${email}`);
+                logger.info(`Usuario creado exitosamente: ${email}`);
             } catch (userError) {
-                console.error('Error al crear usuario:', userError);
+                logger.error('Error al crear usuario:', userError);
                 // El pago se procesó correctamente, pero falló la creación del usuario
                 // Puedes decidir si retornar error o solo loguearlo
                 // Para este caso, continuamos con la respuesta exitosa del pago
@@ -60,7 +61,7 @@ class SubscriptionController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al crear suscripción:', error);
+            logger.error('Error al crear suscripción:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -87,7 +88,7 @@ class SubscriptionController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al obtener suscripciones por email:', error);
+            logger.error('Error al obtener suscripciones por email:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -114,7 +115,7 @@ class SubscriptionController {
 
             return res.status(200).json(result);
         } catch (error) {
-            console.error('Error al obtener detalles de suscripción:', error);
+            logger.error('Error al obtener detalles de suscripción:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor',
@@ -144,7 +145,7 @@ class SubscriptionController {
                 message: `Suscripción ${subscriptionId} cancelada exitosamente`
             });
         } catch (error) {
-            console.error('Error al cancelar suscripción:', error);
+            logger.error('Error al cancelar suscripción:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor'
@@ -157,7 +158,7 @@ class SubscriptionController {
             const listado = await subscriptionService.getClientData();
             return res.status(200).json(listado);
         } catch (error) {
-            console.error('Error al obtener listado de clientes:', error);
+            logger.error('Error al obtener listado de clientes:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error interno del servidor'
