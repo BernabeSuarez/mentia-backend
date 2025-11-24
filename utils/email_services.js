@@ -88,7 +88,7 @@ export async function enviarEmailBienvenida(datosUsuario) {
             
             <p><strong>⚠️ Por tu seguridad, te recomendamos cambiar tu contraseña al iniciar sesión por primera vez.</strong></p>
             
-            <a href="${process.env.APP_URL || 'http://localhost:3000'}/login" class="button">Iniciar Sesión</a>
+            <a href="${process.env.APP_URL || 'https://servermentia.es'}/login" class="button">Iniciar Sesión</a>
             
             <p>Si no solicitaste esta cuenta, por favor ignora este correo.</p>
           </div>

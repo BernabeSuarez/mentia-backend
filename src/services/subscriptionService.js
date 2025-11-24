@@ -15,8 +15,8 @@ export class SubscriptionService {
                         quantity: 1,
                     },
                 ],
-                success_url: "http://localhost:5173/stripe-succes?session_id={CHECKOUT_SESSION_ID}",
-                cancel_url: "http://localhost:5173/stripe-cancel",
+                success_url: "https://servermentia.es/stripe-succes?session_id={CHECKOUT_SESSION_ID}",
+                cancel_url: "https://servermentia.es/stripe-cancel",
             });
 
             return {
