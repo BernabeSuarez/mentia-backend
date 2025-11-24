@@ -19,6 +19,7 @@
     "nodemailer": "^7.0.10",
     "sequelize": "^6.37.7",
     "stripe": "^19.3.0",
-    "winston": "^3.18.3"
+    "winston": "^3.18.3",
+    "mysql2": "^3.9.0"
   }
 }
