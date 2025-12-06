@@ -13,11 +13,11 @@ const doc = {
     consumes: ['application/json'],
     produces: ['application/json'],
     tags: [
-        { name: 'Contact', description: 'Endpoints' },
-        { name: 'InfoContact', description: 'Endpoints' },
-        { name: 'Subscriber', description: 'Endpoints' },
-        { name: 'Subscription', description: 'Endpoints' },
-        { name: 'Users', description: 'Endpoints' }
+        { name: 'Contact', description: 'Endpoint formulario de contacto' },
+        { name: 'InfoContact', description: 'Endpoint formulario de Info' },
+        { name: 'Subscriber', description: 'Endpoint newsletter' },
+        { name: 'Subscription', description: 'Endpoint suscripciones' },
+        { name: 'Users', description: 'Endpoint usuarios' }
     ],
     securityDefinitions: {},  // by default: empty object
     definitions: {

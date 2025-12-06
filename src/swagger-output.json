@@ -10,23 +10,23 @@
   "tags": [
     {
       "name": "Contact",
-      "description": "Endpoints"
+      "description": "Endpoint formulario de contacto"
     },
     {
       "name": "InfoContact",
-      "description": "Endpoints"
+      "description": "Endpoint formulario de Info"
     },
     {
       "name": "Subscriber",
-      "description": "Endpoints"
+      "description": "Endpoint newsletter"
     },
     {
       "name": "Subscription",
-      "description": "Endpoints"
+      "description": "Endpoint suscripciones"
     },
     {
       "name": "Users",
-      "description": "Endpoints"
+      "description": "Endpoint usuarios"
     }
   ],
   "schemes": [
