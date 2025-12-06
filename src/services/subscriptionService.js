@@ -15,7 +15,7 @@ export class SubscriptionService {
                         quantity: 1,
                     },
                 ],
-                success_url: "https://mentia-academy.vercel.app/stripe-succes?session_id={CHECKOUT_SESSION_ID}",
+                success_url: "https://mentia-academy.vercel.app/stripe-success?session_id={CHECKOUT_SESSION_ID}",
                 cancel_url: "https://mentia-academy.vercel.app/stripe-cancel",
             });
 
