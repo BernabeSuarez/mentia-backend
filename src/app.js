@@ -8,6 +8,11 @@ import { router as subscriptionRoutes } from './routes/subscriptionRoutes.js';
 import './models/User.js';
 import cors from 'cors';
 import { logger } from '../utils/logger.js';
+import swaggerUi from "swagger-ui-express"
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const swaggerDocument = require('./swagger-output.json');
+
 
 
 
@@ -17,6 +22,7 @@ const port = 3000
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 await sequelize.authenticate();
 await sequelize.sync({ alter: true });

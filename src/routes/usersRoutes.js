@@ -8,15 +8,33 @@ export const router = Router();
 router.post('/login', userController.login);
 
 // Rutas CRUD de usuarios (proteger con middleware de autenticación en producción)
-router.post('/', userController.create);
-router.get('/', userController.getAll);
-router.get('/:id', userController.getById);
-router.get('/username/:email', userController.getByEmail);
-router.get('/username/:username', userController.getByUsername);
-router.put('/:id', userController.update);
-router.delete('/:id', userController.delete);
+router.post('/',  // #swagger.tags = ['Users']
+    // #swagger.description = 'Crear un nuevo usuario'
+    userController.create);
+router.get('/', // #swagger.tags = ['Users']
+    // #swagger.description = 'Obtener todos los usuarios'
+    userController.getAll);
+router.get('/:id', // #swagger.tags = ['Users']
+    // #swagger.description = 'Obtener un usuario por su ID'
+    userController.getById);
+router.get('/username/:email', //#swagger.tags = ['Users']
+    // #swagger.description = 'Obtener un usuario por su Email'
+    userController.getByEmail);
+router.get('/username/:username', //#swagger.tags = ['Users']
+    // #swagger.description = 'Obtener un usuario por su Username'
+    userController.getByUsername);
+router.put('/:id', //#swagger.tags = ['Users']
+    // #swagger.description = 'Actualizar un usuario'
+    userController.update);
+router.delete('/:id', //#swagger.tags = ['Users']
+    // #swagger.description = 'Eliminar un usuario'
+    userController.delete);
 
 // Rutas de gestión de estado
-router.patch('/:id/suspend', userController.suspend);
-router.patch('/:id/activate', userController.activate);
+router.patch('/:id/suspend', //#swagger.tags = ['Users']
+    // #swagger.description = 'Suspender la cuenta de un usuario'
+    userController.suspend);
+router.patch('/:id/activate',//#swagger.tags = ['Users']
+    // #swagger.description = 'Reactivar la cuenta de un usuario'
+    userController.activate);
 

@@ -8,7 +8,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node --watch src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "swagger": "node src/swagger.js"
   },
   "dependencies": {
     "@stripe/stripe-js": "^8.3.0",
@@ -16,10 +17,14 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "mysql2": "^3.9.0",
     "nodemailer": "^7.0.10",
     "sequelize": "^6.37.7",
     "stripe": "^19.3.0",
-    "winston": "^3.18.3",
-    "mysql2": "^3.9.0"
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.18.3"
+  },
+  "devDependencies": {
+    "swagger-autogen": "^2.23.7"
   }
 }
