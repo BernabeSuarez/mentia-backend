@@ -22,6 +22,29 @@ class SubscriptionController {
                 });
             }
 
+            // Verificar si el email ya está registrado ANTES de procesar el pago
+            try {
+                const existingUser = await userService.getUserByEmail(email);
+
+                if (existingUser) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'El email ya se encuentra en uso'
+                    });
+                }
+            } catch (error) {
+                // Si el error es que no se encontró el usuario, continuamos
+                // Si es otro tipo de error, lo manejamos
+                if (error.message !== 'Usuario no encontrado') {
+                    logger.error('Error al verificar email:', error);
+                    return res.status(500).json({
+                        success: false,
+                        message: 'Error al verificar el email'
+                    });
+                }
+            }
+
+            // Proceder con la creación de la suscripción solo si el email no existe
             const result = await subscriptionService.createSubscription(priceId, email);
 
             if (!result.success) {
@@ -40,8 +63,6 @@ class SubscriptionController {
                     password: 'Mentia2025'
                 };
 
-                // Llamar al servicio o modelo de usuario para crear
-                // Ajusta esto según tu implementación (userService, User model, etc.)
                 await userService.createUser(userData);
                 await enviarEmailBienvenida({
                     nombre: username,
@@ -49,14 +70,11 @@ class SubscriptionController {
                     password: 'Mentia2025'
                 });
 
-
-
                 logger.info(`Usuario creado exitosamente: ${email}`);
             } catch (userError) {
                 logger.error('Error al crear usuario:', userError);
                 // El pago se procesó correctamente, pero falló la creación del usuario
-                // Puedes decidir si retornar error o solo loguearlo
-                // Para este caso, continuamos con la respuesta exitosa del pago
+                // Considera implementar un rollback del pago aquí si es necesario
             }
 
             return res.status(200).json(result);
