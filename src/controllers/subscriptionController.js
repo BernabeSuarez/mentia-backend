@@ -23,25 +23,13 @@ class SubscriptionController {
             }
 
             // Verificar si el email ya está registrado ANTES de procesar el pago
-            try {
-                const existingUser = await userService.getUserByEmail(email);
+            const existingUser = await userService.getUserByEmail(email);
 
-                if (existingUser) {
-                    return res.status(400).json({
-                        success: false,
-                        message: 'El email ya se encuentra en uso'
-                    });
-                }
-            } catch (error) {
-                // Si el error es que no se encontró el usuario, continuamos
-                // Si es otro tipo de error, lo manejamos
-                if (error.message !== 'Usuario no encontrado') {
-                    logger.error('Error al verificar email:', error);
-                    return res.status(500).json({
-                        success: false,
-                        message: 'Error al verificar el email'
-                    });
-                }
+            if (existingUser.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'El email ya se encuentra en uso'
+                });
             }
 
             // Proceder con la creación de la suscripción solo si el email no existe
