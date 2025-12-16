@@ -51,8 +51,8 @@ export const InfoContact = sequelize.define('Contact', {
                 msg: 'La asignatura es requerida'
             },
             len: {
-                args: [10, 120],
-                msg: 'El asignatura debe tener entre 4 y 120 caracteres'
+                args: [2, 50],
+                msg: 'El asignatura debe tener entre 2 y 50 caracteres'
             }
         }
     },

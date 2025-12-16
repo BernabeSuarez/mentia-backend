@@ -5,6 +5,7 @@ import contactRoutes from './routes/contactRoutes.js';
 import infoContactRoutes from './routes/infoContactRoutes.js';
 import { router as userRoutes } from './routes/usersRoutes.js';
 import { router as subscriptionRoutes } from './routes/subscriptionRoutes.js';
+import hubspotRoutes from './routes/hubspotRoutes.js'
 import './models/User.js';
 import cors from 'cors';
 import { logger } from '../utils/logger.js';
@@ -37,6 +38,8 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/info-contact', infoContactRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/hubspot', hubspotRoutes);
+
 
 
 // Ruta de prueba
