@@ -2,6 +2,9 @@ import { subscriptionService } from '../services/subscriptionService.js';
 import userService from '../services/usersService.js'
 import { enviarEmailBienvenida } from '../../utils/email_services.js';
 import { logger } from '../../utils/logger.js';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 class SubscriptionController {
     async create(req, res) {
@@ -32,37 +35,11 @@ class SubscriptionController {
                 });
             }
 
-            // Proceder con la creación de la suscripción solo si el email no existe
+            // Solo crear la sesión de checkout, el usuario se creará en el webhook
             const result = await subscriptionService.createSubscription(priceId, email);
 
             if (!result.success) {
                 return res.status(400).json(result);
-            }
-
-            // Crear usuario después de confirmación exitosa del pago
-            try {
-                // Extraer nombre del email (parte antes del @)
-                const username = email.split('@')[0];
-
-                // Datos del nuevo usuario
-                const userData = {
-                    username: username,
-                    email: email,
-                    password: 'Mentia2025'
-                };
-
-                await userService.createUser(userData);
-                await enviarEmailBienvenida({
-                    nombre: username,
-                    email: email,
-                    password: 'Mentia2025'
-                });
-
-                logger.info(`Usuario creado exitosamente: ${email}`);
-            } catch (userError) {
-                logger.error('Error al crear usuario:', userError);
-                // El pago se procesó correctamente, pero falló la creación del usuario
-                // Considera implementar un rollback del pago aquí si es necesario
             }
 
             return res.status(200).json(result);
@@ -72,6 +49,72 @@ class SubscriptionController {
                 success: false,
                 message: 'Error interno del servidor',
             });
+        }
+    }
+
+    async handleWebhook(req, res) {
+        const sig = req.headers['stripe-signature'];
+        const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+        let event;
+
+        try {
+            event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        } catch (err) {
+            logger.error('Error al verificar webhook:', err.message);
+            return res.status(400).send(`Webhook Error: ${err.message}`);
+        }
+
+        try {
+            switch (event.type) {
+                case 'checkout.session.completed':
+                    const session = event.data.object;
+                    
+                    // Solo proceder si el pago fue exitoso
+                    if (session.payment_status === 'paid') {
+                        const email = session.customer_details?.email;
+                        
+                        if (email) {
+                            // Verificar que el usuario no exista ya
+                            const existingUser = await userService.getUserByEmail(email);
+                            
+                            if (!existingUser.success) {
+                                // Crear usuario
+                                const username = email.split('@')[0];
+                                const userData = {
+                                    username: username,
+                                    email: email,
+                                    password: 'Mentia2025'
+                                };
+
+                                await userService.createUser(userData);
+                                await enviarEmailBienvenida({
+                                    nombre: username,
+                                    email: email,
+                                    password: 'Mentia2025'
+                                });
+
+                                logger.info(`Usuario creado exitosamente después del pago: ${email}`);
+                            } else {
+                                logger.info(`Usuario ya existe para email: ${email}`);
+                            }
+                        }
+                    }
+                    break;
+
+                case 'invoice.payment_succeeded':
+                    const invoice = event.data.object;
+                    logger.info(`Pago exitoso para suscripción: ${invoice.subscription}`);
+                    break;
+
+                default:
+                    logger.info(`Evento no manejado: ${event.type}`);
+            }
+
+            res.json({ received: true });
+        } catch (error) {
+            logger.error('Error al procesar webhook:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 

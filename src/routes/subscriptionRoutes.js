@@ -27,3 +27,8 @@ router.post('/cancel', //#swagger.tags = ['Subscription']
 router.get('/clients/list',//#swagger.tags = ['Subscription']
     // #swagger.description = 'Obtener el listado de clientes.'
     subscriptionController.getClientsList);
+
+// Webhook de Stripe
+router.post('/webhook',//#swagger.tags = ['Subscription']
+    // #swagger.description = 'Webhook para procesar eventos de Stripe.'
+    subscriptionController.handleWebhook);

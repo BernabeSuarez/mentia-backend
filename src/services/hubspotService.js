@@ -3,7 +3,7 @@ import HubSpot from '@hubspot/api-client'
 const hubspotClient = new HubSpot.Client({
     accessToken: process.env.HUBSPOT_PRIVATE_APP_TOKEN
 })
-console.log(hubspotClient)
+
 
 
 class HubspotService {

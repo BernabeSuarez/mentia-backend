@@ -843,6 +843,74 @@
           }
         }
       }
+    },
+    "/api/subscriptions/webhook": {
+      "post": {
+        "tags": [
+          "Subscription"
+        ],
+        "description": "Webhook para procesar eventos de Stripe.",
+        "parameters": [
+          {
+            "name": "stripe-signature",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/hubspot/": {
+      "post": {
+        "tags": [
+          "HubSpot"
+        ],
+        "description": "crear el contacto en HubSpot.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nombre": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "telefono": {
+                  "example": "any"
+                },
+                "asignatura": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "definitions": {
