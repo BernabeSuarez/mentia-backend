@@ -17,7 +17,7 @@ router.get('/', // #swagger.tags = ['Users']
 router.get('/:id', // #swagger.tags = ['Users']
     // #swagger.description = 'Obtener un usuario por su ID'
     userController.getById);
-router.get('/username/:email', //#swagger.tags = ['Users']
+router.get('/email/:email', //#swagger.tags = ['Users']
     // #swagger.description = 'Obtener un usuario por su Email'
     userController.getByEmail);
 router.get('/username/:username', //#swagger.tags = ['Users']

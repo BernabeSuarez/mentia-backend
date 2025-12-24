@@ -288,3 +288,191 @@ export async function enviarEmailBienvenida(datosUsuario) {
     throw error;
   }
 }
+
+// Función para enviar email al administrador sobre nueva matrícula
+export async function enviarEmailMatriculaAdmin(datosMatricula) {
+  const { fullName, email, phone, courseName, sessionId } = datosMatricula;
+
+  const mailOptions = {
+    from: `"Mentia Academy" <${process.env.EMAIL_USER}>`,
+    to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER, // Email del administrador
+    subject: `🎓 Nueva Matrícula - ${courseName}`,
+    html: `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background-color: #f1f5f9;
+      padding: 20px 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .header {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: white;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .content {
+      padding: 32px 24px;
+    }
+    .alert-card {
+      background: linear-gradient(to right, #f0fdf4, #dcfce7);
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+      border-left: 4px solid #22c55e;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .info-item {
+      padding: 16px;
+      background-color: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .info-label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .info-value {
+      font-size: 14px;
+      color: #1e293b;
+      font-weight: 500;
+      word-break: break-word;
+    }
+    .actions {
+      background-color: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    .actions h3 {
+      color: #ea580c;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+    .actions ul {
+      margin-left: 20px;
+      color: #9a3412;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .footer {
+      background-color: #f8fafc;
+      padding: 20px 24px;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+    }
+    .footer p {
+      font-size: 12px;
+      color: #64748b;
+    }
+    @media only screen and (max-width: 600px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+      .content {
+        padding: 24px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎓 Nueva Matrícula Confirmada</h1>
+    </div>
+    
+    <div class="content">
+      <div class="alert-card">
+        <h3>✅ ¡Buenas noticias!</h3>
+        <p>Un nuevo usuario se ha matriculado exitosamente en uno de los cursos.</p>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Nombre Completo</div>
+          <div class="info-value">${fullName}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Email</div>
+          <div class="info-value">${email}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Teléfono</div>
+          <div class="info-value">${phone || 'No proporcionado'}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Curso</div>
+          <div class="info-value">${courseName}</div>
+        </div>
+        <div class="info-item" style="grid-column: span 2;">
+          <div class="info-label">ID de Sesión</div>
+          <div class="info-value">${sessionId}</div>
+        </div>
+      </div>
+      
+      <div class="actions">
+        <h3>⚠️ Acciones Requeridas</h3>
+        <ul>
+          <li>Dar de alta al usuario en la plataforma del curso: <strong>${courseName}</strong></li>
+          <li>Verificar que el pago ha sido procesado correctamente</li>
+          <li>Enviar credenciales de acceso si es necesario</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>Este es un correo automático del sistema de Mentia Academy</p>
+    </div>
+  </div>
+</body>
+</html>
+`
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    logger.info('Email de matrícula enviado al administrador:', info.messageId);
+    return {
+      success: true,
+      messageId: info.messageId
+    };
+  } catch (error) {
+    logger.error('Error al enviar email de matrícula:', error);
+    throw error;
+  }
+}

@@ -3,7 +3,7 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export class SubscriptionService {
-    async createSubscription(priceId, customerEmail) {
+    async createSubscription(priceId, customerEmail, curso, fullName, phone) {
         try {
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
@@ -17,6 +17,11 @@ export class SubscriptionService {
                 ],
                 success_url: "https://mentia-academy.vercel.app/stripe-success?session_id={CHECKOUT_SESSION_ID}",
                 cancel_url: "https://mentia-academy.vercel.app/stripe-cancel",
+                metadata: {
+                    course_name: curso, // Guardar nombre del curso en metadata
+                    full_name: fullName, // Guardar nombre completo
+                    phone: phone || '' // Guardar teléfono
+                }
             });
 
             return {

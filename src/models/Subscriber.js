@@ -9,16 +9,26 @@ export const Subscriber = sequelize.define('Subscriber', {
         primaryKey: true,
         autoIncrement: true
     },
-    name: {
+    fullName: {
         type: DataTypes.STRING(100),
         allowNull: false,
         validate: {
             notEmpty: {
-                msg: 'El nombre es obligatorio'
+                msg: 'El nombre completo es obligatorio'
             },
             len: {
                 args: [2, 100],
-                msg: 'El nombre debe tener entre 2 y 100 caracteres'
+                msg: 'El nombre completo debe tener entre 2 y 100 caracteres'
+            }
+        }
+    },
+    phone: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+        validate: {
+            len: {
+                args: [0, 20],
+                msg: 'El teléfono no puede exceder 20 caracteres'
             }
         }
     },
@@ -34,6 +44,16 @@ export const Subscriber = sequelize.define('Subscriber', {
             },
             notEmpty: {
                 msg: 'El email es obligatorio'
+            }
+        }
+    },
+    courseName: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        validate: {
+            len: {
+                args: [0, 255],
+                msg: 'El nombre del curso no puede exceder 255 caracteres'
             }
         }
     },

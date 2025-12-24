@@ -1,15 +1,16 @@
 import { subscriptionService } from '../services/subscriptionService.js';
 import userService from '../services/usersService.js'
-import { enviarEmailBienvenida } from '../../utils/email_services.js';
+import { enviarEmailBienvenida, enviarEmailMatriculaAdmin } from '../../utils/email_services.js';
 import { logger } from '../../utils/logger.js';
 import Stripe from 'stripe';
+import bcrypt from 'bcrypt';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 class SubscriptionController {
     async create(req, res) {
         try {
-            const { priceId, email } = req.body;
+            const { priceId, email, fullName, phone, curso } = req.body;
 
             if (!priceId) {
                 return res.status(400).json({
@@ -25,6 +26,37 @@ class SubscriptionController {
                 });
             }
 
+            if (!fullName) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'fullName es requerido'
+                });
+            }
+
+            if (!curso) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'curso es requerido'
+                });
+            }
+
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'email no tiene un formato válido'
+                });
+            }
+
+            // Validar teléfono si se proporciona
+            if (phone && !/^\+?[\d\s\-\(\)]+$/.test(phone)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'phone no tiene un formato válido'
+                });
+            }
+
             // Verificar si el email ya está registrado ANTES de procesar el pago
             const existingUser = await userService.getUserByEmail(email);
 
@@ -36,7 +68,7 @@ class SubscriptionController {
             }
 
             // Solo crear la sesión de checkout, el usuario se creará en el webhook
-            const result = await subscriptionService.createSubscription(priceId, email);
+            const result = await subscriptionService.createSubscription(priceId, email, curso, fullName, phone);
 
             if (!result.success) {
                 return res.status(400).json(result);
@@ -73,30 +105,71 @@ class SubscriptionController {
                     // Solo proceder si el pago fue exitoso
                     if (session.payment_status === 'paid') {
                         const email = session.customer_details?.email;
+                        const courseName = session.metadata?.course_name;
+                        const fullName = session.metadata?.full_name;
+                        const phone = session.metadata?.phone;
                         
-                        if (email) {
+                        if (email && courseName) {
                             // Verificar que el usuario no exista ya
                             const existingUser = await userService.getUserByEmail(email);
                             
                             if (!existingUser.success) {
-                                // Crear usuario
+                                // Crear usuario con contraseña segura y hasheada
                                 const username = email.split('@')[0];
+                                const tempPassword = Math.random().toString(36).slice(-8); // Generar contraseña temporal segura
+                                const hashedPassword = await bcrypt.hash(tempPassword, 10);
+                                
                                 const userData = {
                                     username: username,
                                     email: email,
-                                    password: 'Mentia2025'
+                                    password: hashedPassword
                                 };
 
                                 await userService.createUser(userData);
                                 await enviarEmailBienvenida({
                                     nombre: username,
                                     email: email,
-                                    password: 'Mentia2025'
+                                    password: tempPassword
                                 });
 
                                 logger.info(`Usuario creado exitosamente después del pago: ${email}`);
                             } else {
                                 logger.info(`Usuario ya existe para email: ${email}`);
+                            }
+
+                            // Usar transacción para garantizar consistencia de datos
+                            const { Subscriber } = await import('../models/Subscriber.js');
+                            
+                            try {
+                                await sequelize.transaction(async (t) => {
+                                    // Guardar suscripción con datos completos en la base de datos
+                                    await Subscriber.create({
+                                        fullName: fullName || email.split('@')[0],
+                                        email: email,
+                                        phone: phone || '',
+                                        courseName: courseName
+                                    }, { transaction: t });
+                                    
+                                    logger.info(`Suscripción guardada en base de datos: ${email} - ${courseName}`);
+                                    
+                                    // Enviar email al administrador (fuera de la transacción de BD)
+                                    try {
+                                        await enviarEmailMatriculaAdmin({
+                                            fullName: fullName || email.split('@')[0],
+                                            email: email,
+                                            phone: phone || '',
+                                            courseName: courseName,
+                                            sessionId: session.id
+                                        });
+                                        logger.info(`Email de matrícula enviado al administrador para: ${email}`);
+                                    } catch (emailError) {
+                                        logger.error('Error al enviar email al administrador:', emailError);
+                                        // No hacer rollback por error de email, el usuario ya está pagado
+                                    }
+                                });
+                            } catch (dbError) {
+                                logger.error('Error crítico al guardar suscripción en base de datos:', dbError);
+                                // Aquí podrías implementar un sistema de reintentos o notificación manual
                             }
                         }
                     }
