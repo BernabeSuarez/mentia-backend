@@ -13,10 +13,19 @@ class HubspotService {
                 properties: {
                     firstname: data.nombre,
                     email: data.email,
-                    phone: data.telefono,
-                    subject: data.asignatura
+                    phone: data.telefono
                 }
             };
+
+            // Agregar asignatura si está presente
+            if (data.asignatura) {
+                contactObj.properties.subject = data.asignatura;
+            }
+
+            // Agregar mensaje si está presente
+            if (data.mensaje) {
+                contactObj.properties.message = data.mensaje;
+            }
 
             const response = await hubspotClient.crm.contacts.basicApi.create(contactObj);
 

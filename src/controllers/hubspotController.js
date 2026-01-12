@@ -4,13 +4,21 @@ import { logger } from '../../utils/logger.js';
 class HubspotController {
     async create(req, res) {
         try {
-            const { nombre, email, telefono, asignatura } = req.body;
+            const { nombre, email, telefono, asignatura, mensaje } = req.body;
 
             // Validación básica
-            if (!nombre || !email || !telefono || !asignatura) {
+            if (!nombre || !email || !telefono) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Nombre, email, telefono y asignatura son campos requeridos'
+                    message: 'Nombre, email y telefono son campos requeridos'
+                });
+            }
+
+            // Validar que al menos uno de los campos opcionales esté presente
+            if (!asignatura && !mensaje) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Debe proporcionar al menos una asignatura o un mensaje'
                 });
             }
 
@@ -18,8 +26,8 @@ class HubspotController {
                 nombre,
                 email,
                 telefono,
-                asignatura
-
+                asignatura,
+                mensaje
             });
 
             if (!result.success) {
